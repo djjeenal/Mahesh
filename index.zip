@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Patidar Hotel</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --card:#ffffff;
+    --text:#111827;
+    --muted:#6b7280;
+    --primary:#6b7280; /* grey buttons */
+    --primary-hover:#4b5563;
+    --danger:#dc2626;
+    --success:#16a34a;
+    --warning:#f59e0b;
+    --chip:#f3f4f6;
+    --border:#e5e7eb;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color: transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .container{width:min(1100px, 100%);padding:16px;}
+  .centerwrap{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+  .stack{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:16px;
+    box-shadow:0 8px 30px rgba(0,0,0,.06);
+    padding:20px;width:100%;max-width:420px;
+  }
+  h1,h2,h3{margin:0 0 8px;text-align:center}
+  .subtitle{color:var(--muted);font-size:13px;text-align:center;margin-bottom:12px}
+  .row{display:flex;gap:10px;align-items:center}
+  .row.split{justify-content:space-between}
+  .btn{
+    background:var(--primary);color:#fff;border:none;border-radius:10px;
+    padding:12px 14px;font-weight:600;cursor:pointer;width:100%;
+  }
+  .btn:hover{background:var(--primary-hover)}
+  .btn.ghost{background:#f9fafb;color:#111;border:1px solid var(--border)}
+  .btn.red{background:var(--danger)}
+  .btn.green{background:var(--success)}
+  .btn.yellow{background:var(--warning);color:#111}
+  .btn.chip{background:var(--chip);color:#111;border:1px solid var(--border);font-weight:600}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  label{font-size:12px;color:var(--muted);display:block;margin:10px 0 4px}
+  input,select,textarea{
+    width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;outline:none;
+    background:#fff;font-size:15px;
+  }
+  textarea{min-height:70px;resize:vertical}
+  .hidden{display:none !important}
+  .tabs{display:flex;gap:10px;margin-top:8px}
+  .tabs .tab{flex:1}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--border);font-size:12px}
+  .kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+  .kpi .box{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;text-align:center}
+  .kpi .val{font-weight:800;font-size:18px}
+  .toast{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:18px;
+    background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-size:14px;z-index:10000;opacity:.96
+  }
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+  .flex{display:flex;gap:8px}
+  .between{display:flex;justify-content:space-between;align-items:center}
+  .list{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .list .item{display:flex;justify-content:space-between;gap:8px;padding:10px;border-bottom:1px solid var(--border)}
+  .list .item:last-child{border-bottom:none}
+  .badge{padding:4px 8px;border-radius:999px;font-size:11px;border:1px solid var(--border);background:#fff}
+  .danger{color:var(--danger)} .success{color:var(--success)} .muted{color:var(--muted)}
+  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+  .toolbar .btn{width:auto}
+  .modal{
+    position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;
+    z-index:9999;padding:14px;
+  }
+  .modal .sheet{background:#fff;border-radius:16px;border:1px solid var(--border);padding:16px;max-width:520px;width:100%}
+  .chipline{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .divider{height:1px;background:var(--border);margin:12px 0}
+  .note{font-size:12px;color:var(--muted)}
+  .center{display:flex;justify-content:center}
+  .avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1px solid var(--border)}
+  .bigavatar{width:88px;height:88px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+  .headbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .titleControls{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+  .nowrap{white-space:nowrap}
+  .nowrap .btn{white-space:nowrap}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Landing -->
+  <div id="view-landing" class="centerwrap">
+    <div class="card" style="max-width:560px">
+      <h1 id="hotelTitle">WELCOME<br><span id="hotelName">Patidar Hotel</span></h1>
+      <div class="subtitle">(Tap a card below)</div>
+      <div class="stack" style="margin-top:8px">
+        <button class="btn chip" id="btn-user">User</button>
+        <button class="btn chip" id="btn-admin">Admin</button>
+        <button class="btn chip" id="btn-super">Super Admin</button>
+      </div>
+      <div class="titleControls">
+        <span class="pill">Title Size 
+          <select id="ctl-title-size">
+            <option value="28">28</option><option value="32">32</option>
+            <option value="36" selected>36</option><option value="40">40</option><option value="48">48</option>
+          </select>
+        </span>
+        <span class="pill">Color 
+          <select id="ctl-title-color">
+            <option value="#111827" selected>Black</option>
+            <option value="#374151">Slate</option>
+            <option value="#6b7280">Grey</option>
+            <option value="#0f766e">Teal</option>
+          </select>
+        </span>
+        <span class="pill">Align 
+          <select id="ctl-title-align">
+            <option value="center" selected>Center</option>
+            <option value="left">Left</option><option value="right">Right</option>
+          </select>
+        </span>
+      </div>
+      <div class="center" style="margin-top:8px">
+        <button class="btn ghost" id="demoFill">Demo Auto-Fill</button>
+      </div>
+      <div class="note center" style="margin-top:8px">Buttons are grey, background white, fully centered.</div>
+    </div>
+  </div>
+
+  <!-- User Auth -->
+  <div id="view-user-auth" class="centerwrap hidden">
+    <div class="card">
+      <h2>USER</h2>
+      <div class="tabs">
+        <button class="btn tab" id="tab-user-login">Login</button>
+        <button class="btn ghost tab" id="tab-user-create">Create Account</button>
+      </div>
+      <div id="user-login">
+        <label>Phone</label><input id="uPhone" inputmode="numeric" maxlength="10" placeholder="10 digits"/>
+        <label>PIN</label><input id="uPin" type="password" maxlength="10" placeholder="4-10"/>
+        <div class="row">
+          <button class="btn" id="userLoginBtn">Login</button>
+          <button class="btn ghost" id="backFromUser">Back</button>
+        </div>
+      </div>
+      <div id="user-create" class="hidden">
+        <label>Full Name</label><input id="cName" placeholder="Your name"/>
+        <label>Phone</label><input id="cPhone" inputmode="numeric" maxlength="10" placeholder="10 digits"/>
+        <label>PIN</label><input id="cPin" type="password" maxlength="10" placeholder="4-10"/>
+        <div class="row">
+          <button class="btn" id="userCreateBtn">Create</button>
+          <button class="btn ghost" id="backFromCreate">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Auth -->
+  <div id="view-admin-auth" class="centerwrap hidden">
+    <div class="card">
+      <h2>ADMIN LOGIN</h2>
+      <label>Phone</label><input id="aPhone" inputmode="numeric" maxlength="10" placeholder="Phone"/>
+      <label>PIN</label><input id="aPin" type="password" maxlength="10" placeholder="PIN"/>
+      <div class="row">
+        <button class="btn" id="adminLoginBtn">Login</button>
+        <button class="btn ghost" id="backFromAdmin">Back</button>
+      </div>
+      <div class="note center" style="margin-top:8px">Default: 8401875642 / 834733</div>
+    </div>
+  </div>
+
+  <!-- Super Admin Auth -->
+  <div id="view-super-auth" class="centerwrap hidden">
+    <div class="card">
+      <h2>SUPER ADMIN</h2>
+      <label>Phone</label><input id="sPhone" inputmode="numeric" maxlength="10" placeholder="Phone"/>
+      <label>PIN</label><input id="sPin" type="password" maxlength="10" placeholder="PIN"/>
+      <div class="row">
+        <button class="btn" id="superLoginBtn">Login</button>
+        <button class="btn ghost" id="backFromSuper">Back</button>
+      </div>
+      <div class="note center" style="margin-top:8px">Default: 9999999999 / 5555</div>
+    </div>
+  </div>
+
+  <!-- USER PANEL -->
+  <div id="view-user" class="hidden">
+    <div class="card" style="max-width:740px">
+      <div class="headbar">
+        <div class="row">
+          <img id="userAvatar" class="avatar" src="" alt="">
+          <div>
+            <div id="userHello" style="font-weight:800">Hello, User</div>
+            <div class="note" id="userPhoneTag">+91-</div>
+          </div>
+        </div>
+        <div class="row">
+          <span class="badge" id="aiHelpBadge">AI Help: ON</span>
+          <button class="btn ghost" id="btnUserLogout">Logout</button>
+        </div>
+      </div>
+
+      <div class="kpi">
+        <div class="box">
+          <div class="note">Wallet</div>
+          <div class="val success" id="kWallet">₹0</div>
+        </div>
+        <div class="box">
+          <div class="note">Udhari (Due)</div>
+          <div class="val danger" id="kDebt">+₹0</div>
+        </div>
+        <div class="box">
+          <div class="note">Daily Limit</div>
+          <div class="val" id="kDaily">₹0</div>
+          <div class="note" id="kDailyWindow">—</div>
+        </div>
+        <div class="box">
+          <div class="note">Status</div>
+          <div class="val" id="kStatus">Wallet/UPI/Cash</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="btn tab" id="tab-shop">Shop</button>
+        <button class="btn ghost tab" id="tab-orders">My Orders</button>
+        <button class="btn ghost tab" id="tab-profile">Profile</button>
+        <button class="btn ghost tab" id="tab-requests">Udhari Request</button>
+      </div>
+
+      <!-- SHOP -->
+      <div id="user-shop">
+        <div class="between" style="margin:8px 0">
+          <div class="row">
+            <span class="pill">Category
+              <select id="shopCat"></select>
+            </span>
+            <span class="pill">Payment
+              <select id="shopPay">
+                <option value="wallet">Wallet</option>
+                <option value="upi">UPI</option>
+                <option value="cash">Cash</option>
+                <option value="udhari">Udhari</option>
+              </select>
+            </span>
+          </div>
+          <div class="row">
+            <span class="badge">Items: <span id="cartCount">0</span></span>
+            <span class="badge">Total: ₹<span id="cartTotal">0</span></span>
+          </div>
+        </div>
+
+        <div id="menuList" class="list" style="margin-top:8px"></div>
+
+        <div class="divider"></div>
+
+        <div id="upiBlock" class="hidden">
+          <label>UPI UTR Number</label><input id="upiUtr" maxlength="20" placeholder="12-digit ref."/>
+          <label>Upload Screenshot</label><input id="upiShot" type="file" accept="image/*"/>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="btnPlaceOrder">Place Order</button>
+          <button class="btn ghost" id="btnClearCart">Clear</button>
+        </div>
+
+        <div class="note" id="aiHint">AI: Smart suggestions will appear here.</div>
+      </div>
+
+      <!-- ORDERS -->
+      <div id="user-orders" class="hidden">
+        <div id="myOrders" class="list"></div>
+      </div>
+
+      <!-- PROFILE -->
+      <div id="user-profile" class="hidden">
+        <div class="center" style="margin-bottom:8px"><img id="userBig" class="bigavatar" src="" alt=""></div>
+        <div class="grid2">
+          <div>
+            <label>Photo (upload)</label>
+            <input id="uPhoto" type="file" accept="image/*"/>
+          </div>
+          <div>
+            <label>Email</label><input id="uEmail" placeholder="email@domain.com"/>
+          </div>
+          <div>
+            <label>Address</label><textarea id="uAddr" placeholder="Flat, Street, City"></textarea>
+          </div>
+          <div>
+            <label>Birthday (set once)</label><input id="uDob" type="date"/>
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="btnSaveProfile">Save Profile</button>
+          <button class="btn ghost" id="btnToggleAI">AI Help On/Off</button>
+        </div>
+      </div>
+
+      <!-- REQUESTS -->
+      <div id="user-requests" class="hidden">
+        <div class="list">
+          <div class="item">
+            <div>
+              <div class="note">Clear Udhari</div>
+              <div>Remaining: ₹<span id="remainDebt">0</span></div>
+            </div>
+            <div>
+              <div class="row">
+                <select id="reqMode">
+                  <option value="wallet">Wallet</option>
+                  <option value="upi">UPI</option>
+                  <option value="cash">Cash</option>
+                </select>
+                <input id="reqAmt" class="mono" inputmode="numeric" placeholder="Amount"/>
+                <button class="btn" id="btnReqClear">Request</button>
+              </div>
+              <div id="reqUpiBlock" class="hidden" style="margin-top:6px">
+                <input id="reqUtr" placeholder="UPI UTR"/>
+                <input id="reqShot" type="file" accept="image/*"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="view-admin" class="hidden">
+    <div class="card" style="max-width:980px">
+      <div class="between">
+        <h2>Admin Panel</h2>
+        <div class="row">
+          <span class="badge">Hotel: <span id="adminHotelName">Patidar Hotel</span></span>
+          <button class="btn ghost" id="btnAdminLogout">Logout</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="btn tab" id="ad-tab-orders">Orders</button>
+        <button class="btn ghost tab" id="ad-tab-users">Users</button>
+        <button class="btn ghost tab" id="ad-tab-menu">Menu & Stock</button>
+        <button class="btn ghost tab" id="ad-tab-reports">Reports</button>
+        <button class="btn ghost tab" id="ad-tab-settings">Settings</button>
+      </div>
+
+      <!-- ORDERS -->
+      <div id="admin-orders">
+        <div id="adminOrderList" class="list" style="margin-top:8px"></div>
+      </div>
+
+      <!-- USERS -->
+      <div id="admin-users" class="hidden">
+        <div id="usersList" class="list" style="margin-top:8px"></div>
+      </div>
+
+      <!-- MENU -->
+      <div id="admin-menu" class="hidden">
+        <div class="grid2">
+          <div class="card" style="border:1px dashed var(--border)">
+            <h3>Add Item</h3>
+            <label>Category</label><input id="mCat" placeholder="Snacks / Drinks / Veg / Non-Veg"/>
+            <label>Item Name</label><input id="mName" placeholder="Poha, Tea..."/>
+            <label>Price (₹)</label><input id="mPrice" inputmode="numeric" placeholder="e.g. 25"/>
+            <label>Stock Mode</label>
+            <select id="mStockMode">
+              <option value="auto">Automatic (never ends)</option>
+              <option value="qty">Quantity</option>
+            </select>
+            <label class="qty-field hidden">Quantity</label>
+            <input id="mQty" class="qty-field hidden" inputmode="numeric" placeholder="e.g. 50"/>
+            <label>Photo (optional)</label><input id="mPhoto" type="file" accept="image/*"/>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" id="btnAddItem">Add Item</button>
+              <button class="btn ghost" id="btnResetItem">Reset</button>
+            </div>
+          </div>
+          <div>
+            <h3>Menu</h3>
+            <div id="menuAdminList" class="list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div id="admin-reports" class="hidden">
+        <div class="grid2">
+          <div class="box">
+            <div class="note">Today Wallet</div>
+            <div class="val success" id="rWal">₹0</div>
+          </div>
+          <div class="box">
+            <div class="note">Today UPI</div>
+            <div class="val" id="rUpi">₹0</div>
+          </div>
+          <div class="box">
+            <div class="note">Today Cash</div>
+            <div class="val" id="rCash">₹0</div>
+          </div>
+          <div class="box">
+            <div class="note">Udhari Given (Total)</div>
+            <div class="val danger" id="rDebt">-₹0</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <input id="repFrom" type="date"/><input id="repTo" type="date"/>
+          <button class="btn" id="btnRunReport">Run</button>
+        </div>
+        <div id="repOut" class="list" style="margin-top:8px"></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div id="admin-settings" class="hidden">
+        <div class="grid2">
+          <div class="card" style="border:1px dashed var(--border)">
+            <h3>Hotel Branding</h3>
+            <label>Hotel Name</label><input id="setHotelName" placeholder="Patidar Hotel"/>
+            <label>Title Size</label><input id="setTitleSize" type="number" value="36"/>
+            <label>Title Color</label><input id="setTitleColor" type="color" value="#111827"/>
+            <label>Title Align</label>
+            <select id="setTitleAlign"><option>center</option><option>left</option><option>right</option></select>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" id="btnSaveBrand">Save</button>
+            </div>
+          </div>
+          <div class="card" style="border:1px dashed var(--border)">
+            <h3>Udhari Controls</h3>
+            <div class="chipline">
+              <span class="pill">Mode:
+                <select id="udhariMode"><option value="auto">Auto</option><option value="manual">Manual</option></select>
+              </span>
+              <span class="pill">Monthly Limit (₹) <input id="udhariMonthly" type="number" value="1500" style="width:90px"></span>
+              <span class="pill">Days <input id="udhariDays" type="number" value="30" style="width:70px"></span>
+            </div>
+            <div class="note" id="calcDaily">Daily limit: ₹50</div>
+            <div class="divider"></div>
+            <h3>Feature Toggles</h3>
+            <div class="chipline">
+              <label class="pill">Wallet <input type="checkbox" id="tgWallet" checked></label>
+              <label class="pill">UPI <input type="checkbox" id="tgUpi" checked></label>
+              <label class="pill">Cash <input type="checkbox" id="tgCash" checked></label>
+              <label class="pill">Udhari <input type="checkbox" id="tgDebt" checked></label>
+              <label class="pill">Offers <input type="checkbox" id="tgOffers" checked></label>
+              <label class="pill">AI Help <input type="checkbox" id="tgAI" checked></label>
+              <label class="pill">Language <input type="checkbox" id="tgLang" checked></label>
+              <label class="pill">Staff <input type="checkbox" id="tgStaff" checked></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUPER ADMIN -->
+  <div id="view-super" class="hidden">
+    <div class="card" style="max-width:960px">
+      <div class="between">
+        <h2>Super Admin</h2>
+        <button class="btn ghost" id="btnSuperLogout">Logout</button>
+      </div>
+      <div class="tabs">
+        <button class="btn tab" id="sa-tab-admins">Admins</button>
+        <button class="btn ghost tab" id="sa-tab-global">Global Settings</button>
+        <button class="btn ghost tab" id="sa-tab-special">Special Days</button>
+      </div>
+
+      <!-- Manage Admins -->
+      <div id="sa-admins">
+        <div class="grid2">
+          <div class="card" style="border:1px dashed var(--border)">
+            <h3>Create Admin</h3>
+            <label>Name</label><input id="saAName"/>
+            <label>Phone</label><input id="saAPhone" maxlength="10" inputmode="numeric"/>
+            <label>PIN</label><input id="saAPin" type="password" maxlength="10"/>
+            <button class="btn" id="saCreateAdmin">Create</button>
+          </div>
+          <div>
+            <h3>Admins</h3>
+            <div id="saAdminList" class="list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Global Settings -->
+      <div id="sa-global" class="hidden">
+        <h3>Modules On / Off</h3>
+        <div class="chipline">
+          <label class="pill">Wallet <input type="checkbox" id="sgWallet" checked></label>
+          <label class="pill">UPI <input type="checkbox" id="sgUpi" checked></label>
+          <label class="pill">Cash <input type="checkbox" id="sgCash" checked></label>
+          <label class="pill">Udhari <input type="checkbox" id="sgDebt" checked></label>
+          <label class="pill">Staff <input type="checkbox" id="sgStaff" checked></label>
+          <label class="pill">AI <input type="checkbox" id="sgAI" checked></label>
+          <label class="pill">Offers <input type="checkbox" id="sgOffers" checked></label>
+          <label class="pill">Language <input type="checkbox" id="sgLang" checked></label>
+        </div>
+      </div>
+
+      <!-- Special Days -->
+      <div id="sa-special" class="hidden">
+        <h3>Special Day Greetings</h3>
+        <div class="grid2">
+          <div class="card" style="border:1px dashed var(--border)">
+            <label>Title</label><input id="spTitle" placeholder="Happy Diwali"/>
+            <label>Date</label><input id="spDate" type="date"/>
+            <label>Message</label><textarea id="spMsg" placeholder="🪔 Wish text..."></textarea>
+            <div class="row"><button class="btn" id="spAdd">Add</button></div>
+          </div>
+          <div>
+            <h3>Scheduled</h3>
+            <div id="spList" class="list"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Modals -->
+<div id="modal" class="modal hidden"><div class="sheet" id="modalSheet"></div></div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+/* =================== STORAGE & BOOT =================== */
+const S = {
+  users: 'ph_users',
+  admins: 'ph_admins',
+  super: 'ph_super',
+  hotel: 'ph_hotel',
+  menu: 'ph_menu',
+  orders: 'ph_orders',
+  settings: 'ph_settings',
+  specials: 'ph_specials'
+};
+const $ = sel => document.querySelector(sel);
+const $$ = sel => document.querySelectorAll(sel);
+const show = id => $(id).classList.remove('hidden');
+const hide = id => $(id).classList.add('hidden');
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),1800); }
+function modal(html){ $("#modalSheet").innerHTML = html; show("#modal"); }
+$("#modal").addEventListener('click',e=>{ if(e.target.id==='modal') hide("#modal"); });
+
+function lsGet(k,def){ try{ return JSON.parse(localStorage.getItem(k)) ?? def; }catch{ return def; } }
+function lsSet(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+
+function seedOnce(){
+  if(!lsGet(S.admins,null)){
+    lsSet(S.admins,[{name:"Admin", phone:"8401875642", pin:"834733"}]);
+  }
+  if(!lsGet(S.super,null)){
+    lsSet(S.super,{phone:"9999999999", pin:"5555", name:"Super"});
+  }
+  if(!lsGet(S.users,null)){
+    // demo user
+    lsSet(S.users,[{id:1,name:"Mahesh",phone:"9000000001",pin:"1234",email:"",addr:"",photo:"",dob:"", 
+      wallet:500, debt:0, allowDebt:true, debtMode:"auto",
+      debtStart:null, debtEnd:null, monthly:1500, days:30, daily:50, ai:true, blocked:false }]);
+  }
+  if(!lsGet(S.menu,null)){
+    lsSet(S.menu,[
+      {id:1,cat:"Snacks", name:"Poha", price:30, stock:"auto", qty:null, photo:""},
+      {id:2,cat:"Drinks", name:"Tea", price:15, stock:"qty", qty:40, photo:""},
+      {id:3,cat:"Veg", name:"Paneer Masala", price:180, stock:"qty", qty:10, photo:""}
+    ]);
+  }
+  if(!lsGet(S.hotel,null)){
+    lsSet(S.hotel,{name:"Patidar Hotel", titleSize:36, titleColor:"#111827", titleAlign:"center"});
+  }
+  if(!lsGet(S.settings,null)){
+    lsSet(S.settings,{
+      modules:{wallet:true,upi:true,cash:true,debt:true,offers:true,ai:true,lang:true,staff:true},
+      udhari:{mode:"auto", monthly:1500, days:30},
+      upiTarget:"patidar@upi"
+    });
+  }
+  if(!lsGet(S.orders,null)) lsSet(S.orders,[]);
+  if(!lsGet(S.specials,null)) lsSet(S.specials,[]);
+}
+seedOnce();
+
+/* ============== LANDING CONTROLS ============== */
+function applyHotelBrand(){
+  const h = lsGet(S.hotel,{name:"Patidar Hotel", titleSize:36, titleColor:"#111827", titleAlign:"center"});
+  $("#hotelName").textContent = h.name;
+  $("#hotelTitle").style.color = h.titleColor;
+  $("#hotelTitle").style.fontSize = h.titleSize+"px";
+  $("#hotelTitle").style.textAlign = h.titleAlign;
+  $("#adminHotelName").textContent = h.name;
+  $("#ctl-title-size").value = String(h.titleSize);
+  $("#ctl-title-color").value = h.titleColor;
+  $("#ctl-title-align").value = h.titleAlign;
+}
+applyHotelBrand();
+
+$("#ctl-title-size").addEventListener('change',e=>{
+  const hotel = lsGet(S.hotel,{}); hotel.titleSize = parseInt(e.target.value,10); lsSet(S.hotel,hotel); applyHotelBrand();
+});
+$("#ctl-title-color").addEventListener('change',e=>{
+  const hotel = lsGet(S.hotel,{}); hotel.titleColor = e.target.value; lsSet(S.hotel,hotel); applyHotelBrand();
+});
+$("#ctl-title-align").addEventListener('change',e=>{
+  const hotel = lsGet(S.hotel,{}); hotel.titleAlign = e.target.value; lsSet(S.hotel,hotel); applyHotelBrand();
+});
+
+$("#btn-user").onclick = ()=>{ hide("#view-landing"); show("#view-user-auth"); };
+$("#btn-admin").onclick= ()=>{ hide("#view-landing"); show("#view-admin-auth"); };
+$("#btn-super").onclick= ()=>{ hide("#view-landing"); show("#view-super-auth"); };
+$("#demoFill").onclick = ()=>{
+  $("#uPhone").value="9000000001"; $("#uPin").value="1234";
+  $("#aPhone").value="8401875642"; $("#aPin").value="834733";
+  $("#sPhone").value="9999999999"; $("#sPin").value="5555";
+  toast("Demo filled");
+};
+
+/* ============== USER AUTH ============== */
+const switchUserTab = (tab)=>{
+  if(tab==='login'){
+    $("#tab-user-login").classList.remove('ghost'); $("#tab-user-create").classList.add('ghost');
+    hide("#user-create"); show("#user-login");
+  }else{
+    $("#tab-user-create").classList.remove('ghost'); $("#tab-user-login").classList.add('ghost');
+    hide("#user-login"); show("#user-create");
+  }
+};
+$("#tab-user-login").onclick=()=>switchUserTab('login');
+$("#tab-user-create").onclick=()=>switchUserTab('create');
+$("#backFromUser").onclick=$("#backFromCreate").onclick=()=>{ hide("#view-user-auth"); show("#view-landing"); };
+
+$("#userCreateBtn").onclick = ()=>{
+  const name=$("#cName").value.trim(), phone=$("#cPhone").value.trim(), pin=$("#cPin").value.trim();
+  if(!name || !/^\d{10}$/.test(phone) || pin.length<4) return toast("Enter valid details");
+  const users=lsGet(S.users,[]);
+  if(users.find(u=>u.phone===phone)) return toast("User already exists");
+  const rec={id:Date.now(),name,phone,pin,email:"",addr:"",photo:"",dob:"",
+    wallet:0,debt:0,allowDebt:true,debtMode:lsGet(S.settings,{}).udhari?.mode||"auto",
+    debtStart:null,debtEnd:null,monthly:lsGet(S.settings,{}).udhari?.monthly||1500,
+    days:lsGet(S.settings,{}).udhari?.days||30,daily:0,ai:true,blocked:false};
+  rec.daily = Math.floor((rec.monthly)/(rec.days||30));
+  users.push(rec); lsSet(S.users,users);
+  toast("Account created");
+};
+
+let CURRENT_USER=null; // user object live
+$("#userLoginBtn").onclick = ()=>{
+  const phone=$("#uPhone").value.trim(), pin=$("#uPin").value.trim();
+  const users=lsGet(S.users,[]);
+  const u=users.find(x=>x.phone===phone && x.pin===pin);
+  if(!u) return toast("Invalid phone or PIN");
+  if(u.blocked) return toast("Account blocked");
+  CURRENT_USER = u;
+  openUserPanel();
+};
+
+function openUserPanel(){
+  hide("#view-user-auth"); show("#view-user");
+  // header
+  $("#userHello").textContent = "Hello, "+CURRENT_USER.name;
+  $("#userPhoneTag").textContent = "+91-"+CURRENT_USER.phone;
+  $("#userAvatar").src = CURRENT_USER.photo || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='46' height='46'><rect width='100%' height='100%' fill='%23f3f4f6'/><text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' font-size='16' fill='%236b7280'>U</text></svg>";
+  $("#userBig").src = CURRENT_USER.photo || $("#userAvatar").src;
+  $("#uEmail").value = CURRENT_USER.email||"";
+  $("#uAddr").value = CURRENT_USER.addr||"";
+  $("#uDob").value = CURRENT_USER.dob||"";
+  $("#aiHelpBadge").textContent = "AI Help: " + (CURRENT_USER.ai?"ON":"OFF");
+
+  // KPIs
+  $("#kWallet").textContent = "₹"+(CURRENT_USER.wallet||0);
+  $("#kDebt").textContent = "+₹"+(CURRENT_USER.debt||0);
+  const daily = Math.floor((CURRENT_USER.monthly||1500)/ (CURRENT_USER.days||30));
+  $("#kDaily").textContent = "₹"+daily;
+  $("#kDailyWindow").textContent = CURRENT_USER.debtStart && CURRENT_USER.debtEnd ? (fmtDate(CURRENT_USER.debtStart)+" → "+fmtDate(CURRENT_USER.debtEnd)) : "Not set";
+  $("#kStatus").textContent = enabledModes().join("/");
+
+  // tabs default
+  userSwitch('shop');
+  loadCategories(); renderMenu();
+  renderMyOrders();
+  $("#remainDebt").textContent = CURRENT_USER.debt||0;
+  $("#reqAmt").value = CURRENT_USER.debt||0;
+
+  // AI greet
+  if(CURRENT_USER.ai) {
+    if(isBirthdayToday(CURRENT_USER.dob)) toast("Happy Birthday! 🎉 Check your wallet gift.");
+  }
+}
+function enabledModes(){
+  const m=lsGet(S.settings,{}).modules||{};
+  const r=[];
+  if(m.wallet) r.push("Wallet");
+  if(m.upi) r.push("UPI");
+  if(m.cash) r.push("Cash");
+  if(m.debt) r.push("Udhari");
+  return r;
+}
+function isBirthdayToday(d){
+  if(!d) return false;
+  const t=new Date(), x=new Date(d);
+  return t.getDate()===x.getDate() && t.getMonth()===x.getMonth();
+}
+
+$("#btnUserLogout").onclick=()=>{ CURRENT_USER=null; hide("#view-user"); show("#view-landing"); };
+
+/* User Tabs */
+function userSwitch(tab){
+  const map={shop:"#user-shop", orders:"#user-orders", profile:"#user-profile", requests:"#user-requests"};
+  for(const k in map){ hide(map[k]); $("#tab-"+k)?.classList?.add?.('ghost'); }
+  show(map[tab]); $("#tab-"+tab)?.classList?.remove?.('ghost');
+}
+$("#tab-shop").onclick=()=>userSwitch('shop');
+$("#tab-orders").onclick=()=>{ renderMyOrders(); userSwitch('orders'); };
+$("#tab-profile").onclick=()=>userSwitch('profile');
+$("#tab-requests").onclick=()=>{ $("#remainDebt").textContent = CURRENT_USER.debt||0; $("#reqAmt").value = CURRENT_USER.debt||0; userSwitch('requests'); };
+
+/* Profile save & photo */
+$("#uPhoto").addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const reader=new FileReader(); reader.onload=()=>{
+    CURRENT_USER.photo = reader.result; persistUser(CURRENT_USER.id,CURRENT_USER);
+    $("#userAvatar").src = reader.result; $("#userBig").src=reader.result;
+    toast("Photo updated");
+  }; reader.readAsDataURL(f);
+});
+$("#btnSaveProfile").onclick=()=>{
+  CURRENT_USER.email=$("#uEmail").value.trim();
+  CURRENT_USER.addr=$("#uAddr").value.trim();
+  if(!CURRENT_USER.dob){ CURRENT_USER.dob=$("#uDob").value; } // once
+  persistUser(CURRENT_USER.id,CURRENT_USER); toast("Profile saved");
+};
+$("#btnToggleAI").onclick=()=>{ CURRENT_USER.ai=!CURRENT_USER.ai; persistUser(CURRENT_USER.id,CURRENT_USER); $("#aiHelpBadge").textContent="AI Help: "+(CURRENT_USER.ai?"ON":"OFF"); };
+
+/* Shop / Cart */
+let CART=[];
+function loadCategories(){
+  const menu=lsGet(S.menu,[]);
+  const cats=[...new Set(menu.map(m=>m.cat))];
+  const sel=$("#shopCat"); sel.innerHTML="";
+  cats.forEach(c=>{ const o=document.createElement('option'); o.textContent=c;o.value=c; sel.appendChild(o); });
+}
+function renderMenu(){
+  const menu=lsGet(S.menu,[]); const cat=$("#shopCat").value|| (menu[0]?.cat||"");
+  const list=$("#menuList"); list.innerHTML="";
+  menu.filter(m=>m.cat===cat).forEach(m=>{
+    const left=`<div class="row"><img class="avatar" src="${m.photo||imgPh()}" alt=""><div><div style="font-weight:700">${m.name}</div><div class="note">${m.cat} • ₹${m.price} • ${m.stock==='qty' ? (m.qty+" left"):"auto"}</div></div></div>`;
+    const right=`<div class="row"><button class="btn chip" data-add="${m.id}">+ Add</button></div>`;
+    const div=document.createElement('div'); div.className='item'; div.innerHTML = `<div>${left}</div><div>${right}</div>`;
+    list.appendChild(div);
+  });
+}
+$("#shopCat").addEventListener('change', renderMenu);
+function imgPh(){ return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='46' height='46'><rect width='100%' height='100%' fill='%23e5e7eb'/></svg>"; }
+$("#menuList").addEventListener('click',e=>{
+  const id=e.target?.dataset?.add; if(!id) return;
+  const menu=lsGet(S.menu,[]); const item=menu.find(x=>x.id==id); if(!item) return;
+  // stock check
+  if(item.stock==='qty' && (!item.qty || item.qty<=0)) return toast("Out of stock");
+  CART.push({id:item.id, name:item.name, price:item.price});
+  $("#cartCount").textContent=CART.length;
+  $("#cartTotal").textContent=CART.reduce((a,b)=>a+b.price,0);
+});
+$("#btnClearCart").onclick=()=>{ CART=[]; $("#cartCount").textContent=0; $("#cartTotal").textContent=0; };
+$("#shopPay").addEventListener('change', e=>{
+  const v=e.target.value;
+  if(v==='upi'){ show("#upiBlock"); } else { hide("#upiBlock"); }
+});
+
+/* Place Order (only request; money deduct on Admin Complete) */
+$("#btnPlaceOrder").onclick=()=>{
+  if(!CART.length) return toast("Add items first");
+  const pay=$("#shopPay").value;
+  const m=lsGet(S.settings,{}).modules||{};
+  if(pay==='wallet' && !m.wallet) return toast("Wallet disabled");
+  if(pay==='upi' && !m.upi) return toast("UPI disabled");
+  if(pay==='cash' && !m.cash) return toast("Cash disabled");
+  if(pay==='udhari' && !m.debt) return toast("Udhari disabled");
+
+  const total = CART.reduce((a,b)=>a+b.price,0);
+
+  // Credit rules:
+  if(pay==='udhari'){
+    if(!CURRENT_USER.allowDebt) return toast("Udhari not allowed");
+    // Check period and daily
+    ensureDebtWindow(CURRENT_USER);
+    const daily = Math.floor((CURRENT_USER.monthly||1500)/(CURRENT_USER.days||30));
+    const todaySpent = userTodayCreditSpent(CURRENT_USER.phone);
+    if(todaySpent + total > daily){
+      if(CURRENT_USER.ai) toast("Your daily limit is over");
+      return toast("Daily limit exceeded");
+    }
+    if(CURRENT_USER.debtEnd && new Date()>new Date(CURRENT_USER.debtEnd)){
+      return toast("Your credit window is over");
+    }
+    if(CURRENT_USER.debt>0 && new Date()>new Date(CURRENT_USER.debtEnd)){
+      return toast("Pending credit must be cleared");
+    }
+  }
+  if(pay==='wallet' && (CURRENT_USER.wallet||0) <= 0){
+    return toast("Wallet empty. Use UPI/Cash or add money.");
+  }
+
+  let utr=null, shot=null;
+  if(pay==='upi'){
+    utr = $("#upiUtr").value.trim();
+    const f=$("#upiShot").files[0];
+    if(!utr) return toast("Enter UTR");
+    if(f){
+      const reader=new FileReader();
+      reader.onload=()=>{ shot=reader.result; createOrder(pay,total,utr,shot); };
+      reader.readAsDataURL(f);
+      return;
+    }
+  }
+  createOrder(pay,total,utr,shot);
+};
+
+function createOrder(mode,total,utr,shot){
+  const orders=lsGet(S.orders,[]);
+  const billNo = "B"+(Date.now().toString().slice(-8));
+  const rec={ id:Date.now(), bill:billNo, user:CURRENT_USER.phone, name:CURRENT_USER.name,
+    addr: CURRENT_USER.addr||"", items:[...CART], total, mode, utr:utr||null, shot:shot||null,
+    status:"pending", created: new Date().toISOString()
+  };
+  orders.push(rec); lsSet(S.orders,orders);
+  CART=[]; $("#cartCount").textContent=0; $("#cartTotal").textContent=0; $("#upiUtr").value=""; $("#upiShot").value="";
+  toast("Order requested");
+  renderMyOrders();
+}
+
+function renderMyOrders(){
+  const list=$("#myOrders"); list.innerHTML="";
+  const orders=lsGet(S.orders,[]).filter(o=>o.user===CURRENT_USER.phone).sort((a,b)=>b.id-a.id);
+  if(!orders.length){ list.innerHTML='<div class="item"><div>No orders yet</div></div>'; return;}
+  orders.forEach(o=>{
+    const st = `<span class="badge">${o.status}</span>`;
+    const left = `<div><div style="font-weight:700">Bill ${o.bill}</div>
+      <div class="note">${new Date(o.created).toLocaleString()}</div>
+      <div class="note">${o.items.map(i=>i.name).join(", ")}</div></div>`;
+    let actions = `<button class="btn chip" data-cancel="${o.id}" ${o.status!=='pending'?'disabled':''}>Cancel</button>`;
+    if(o.mode==='upi' && o.shot){
+      actions += ` <button class="btn chip" data-shot="${o.id}">View UPI</button>`;
+    }
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML = `<div class="row">${left}</div><div class="row"><div class="badge">₹${o.total}</div>${st} ${actions}</div>`;
+    list.appendChild(div);
+  });
+}
+$("#myOrders").addEventListener('click',e=>{
+  const id=e.target?.dataset?.cancel; if(id){
+    const orders=lsGet(S.orders,[]);
+    const o=orders.find(x=>x.id==id);
+    if(!o || o.status!=='pending') return;
+    o.status="cancelled"; lsSet(S.orders,orders); toast("Order cancelled"); renderMyOrders(); return;
+  }
+  const sid=e.target?.dataset?.shot; if(sid){
+    const o=lsGet(S.orders,[]).find(x=>x.id==sid); if(!o) return;
+    modal(`<h3>UPI Proof</h3>
+      <div class="note">UTR: ${o.utr||'-'}</div>
+      <div style="margin-top:8px">${o.shot?'<img style="max-width:100%;border:1px solid #eee;border-radius:8px" src="'+o.shot+'"/>':'No screenshot'}</div>
+      <div class="row" style="margin-top:10px"><button class="btn" onclick="hide('#modal')">Close</button></div>`);
+  }
+});
+
+/* Clear Udhari Request */
+$("#reqMode").addEventListener('change',e=>{
+  if(e.target.value==='upi') show("#reqUpiBlock"); else hide("#reqUpiBlock");
+});
+$("#btnReqClear").onclick=()=>{
+  const amt = parseInt($("#reqAmt").value||"0",10);
+  if(amt<=0) return toast("Enter amount");
+  if(amt > (CURRENT_USER.debt||0)){ /* extra goes as advance credit */ }
+  const mode=$("#reqMode").value;
+  let utr=null, shot=null;
+  if(mode==='upi'){
+    utr=$("#reqUtr").value.trim(); if(!utr) return toast("Enter UTR");
+    const f=$("#reqShot").files[0];
+    if(f){ const reader=new FileReader(); reader.onload=()=>{ shot=reader.result; saveClearReq(amt,mode,utr,shot); }; reader.readAsDataURL(f); return; }
+  }
+  saveClearReq(amt,mode,utr,shot);
+};
+function saveClearReq(amt,mode,utr,shot){
+  const orders=lsGet(S.orders,[]);
+  orders.push({ id:Date.now(), bill:"CLR"+Date.now().toString().slice(-6), user:CURRENT_USER.phone, name:CURRENT_USER.name,
+    items:[], total:amt, mode, utr:utr||null, shot:shot||null, status:"pay_request", created:new Date().toISOString() });
+  lsSet(S.orders,orders); toast("Request sent to admin");
+  $("#remainDebt").textContent = CURRENT_USER.debt||0;
+}
+
+/* Helpers */
+function persistUser(id, data){
+  const arr=lsGet(S.users,[]); const i=arr.findIndex(u=>u.id===id); if(i>-1){ arr[i]=data; lsSet(S.users,arr); }
+}
+function fmtDate(d){ const x=new Date(d); return x.toLocaleDateString(); }
+function ensureDebtWindow(u){
+  if(!u.debtStart || !u.debtEnd){
+    const s=new Date(); const e=new Date(); e.setDate(e.getDate()+(u.days||30));
+    u.debtStart=s.toISOString(); u.debtEnd=e.toISOString(); persistUser(u.id,u);
+  }
+}
+function userTodayCreditSpent(phone){
+  const t=new Date(); const yyyy=t.getFullYear(), mm=t.getMonth(), dd=t.getDate();
+  const orders=lsGet(S.orders,[]).filter(o=>o.user===phone && o.mode==='udhari' && o.status==='completed');
+  return orders.filter(o=>{ const d=new Date(o.created); return d.getFullYear()===yyyy && d.getMonth()===mm && d.getDate()===dd; })
+               .reduce((a,b)=>a+b.total,0);
+}
+
+/* ============== ADMIN AUTH ============== */
+$("#backFromAdmin").onclick=()=>{ hide("#view-admin-auth"); show("#view-landing"); };
+$("#adminLoginBtn").onclick=()=>{
+  const phone=$("#aPhone").value.trim(), pin=$("#aPin").value.trim();
+  const a=lsGet(S.admins,[]).find(x=>x.phone===phone && x.pin===pin);
+  if(!a) return toast("Invalid admin");
+  CURRENT_ADMIN=a; openAdmin();
+};
+let CURRENT_ADMIN=null;
+
+/* ============== SUPER AUTH ============== */
+$("#backFromSuper").onclick=()=>{ hide("#view-super-auth"); show("#view-landing"); };
+$("#superLoginBtn").onclick=()=>{
+  const p=$("#sPhone").value.trim(), pin=$("#sPin").value.trim();
+  const s=lsGet(S.super,null);
+  if(!s || s.phone!==p || s.pin!==pin) return toast("Invalid super admin");
+  CURRENT_SUPER=s; openSuper();
+};
+let CURRENT_SUPER=null;
+
+/* ============== ADMIN PANEL ============== */
+function openAdmin(){
+  hide("#view-admin-auth"); show("#view-admin");
+  adminSwitch('orders');
+  renderAdminOrders(); renderAdminUsers(); renderAdminMenu();
+  // settings defaults
+  const st=lsGet(S.settings,{});
+  $("#udhariMode").value = st.udhari?.mode || "auto";
+  $("#udhariMonthly").value = st.udhari?.monthly || 1500;
+  $("#udhariDays").value = st.udhari?.days || 30;
+  $("#calcDaily").textContent = "Daily limit: ₹"+Math.floor((st.udhari?.monthly||1500)/ (st.udhari?.days||30));
+  $("#tgWallet").checked=!!st.modules?.wallet; $("#tgUpi").checked=!!st.modules?.upi;
+  $("#tgCash").checked=!!st.modules?.cash; $("#tgDebt").checked=!!st.modules?.debt;
+  $("#tgOffers").checked=!!st.modules?.offers; $("#tgAI").checked=!!st.modules?.ai;
+  $("#tgLang").checked=!!st.modules?.lang; $("#tgStaff").checked=!!st.modules?.staff;
+  const hotel=lsGet(S.hotel,{});
+  $("#setHotelName").value=hotel.name||"";
+  $("#setTitleSize").value=hotel.titleSize||36;
+  $("#setTitleColor").value=hotel.titleColor||"#111827";
+  $("#setTitleAlign").value=hotel.titleAlign||"center";
+}
+$("#btnAdminLogout").onclick=()=>{ CURRENT_ADMIN=null; hide("#view-admin"); show("#view-landing"); };
+
+function adminSwitch(tab){
+  const map={orders:"#admin-orders", users:"#admin-users", menu:"#admin-menu", reports:"#admin-reports", settings:"#admin-settings"};
+  for(const k in map){ hide(map[k]); $("#ad-tab-"+k)?.classList?.add?.('ghost'); }
+  show(map[tab]); $("#ad-tab-"+tab)?.classList?.remove?.('ghost');
+}
+$("#ad-tab-orders").onclick=()=>{ renderAdminOrders(); adminSwitch('orders'); };
+$("#ad-tab-users").onclick=()=>{ renderAdminUsers(); adminSwitch('users'); };
+$("#ad-tab-menu").onclick=()=>{ renderAdminMenu(); adminSwitch('menu'); };
+$("#ad-tab-reports").onclick=()=>{ computeReports(); adminSwitch('reports'); };
+$("#ad-tab-settings").onclick=()=>{ adminSwitch('settings'); };
+
+function renderAdminOrders(){
+  const list=$("#adminOrderList"); list.innerHTML="";
+  const orders=lsGet(S.orders,[]).sort((a,b)=>b.id-a.id);
+  if(!orders.length){ list.innerHTML='<div class="item"><div>No orders</div></div>'; return;}
+  orders.forEach(o=>{
+    const left = `<div><div style="font-weight:700">Bill ${o.bill} • ${o.name} (${o.user})</div>
+      <div class="note">${new Date(o.created).toLocaleString()}</div>
+      <div class="note">${o.items.length?o.items.map(i=>i.name).join(", "): (o.status==='pay_request'?'Payment Request':'')}</div></div>`;
+    let action='';
+    if(o.status==='pending'){
+      action = `<button class="btn chip" data-accept="${o.id}">Accept</button>
+                <button class="btn chip" data-edit="${o.id}">Edit</button>
+                <button class="btn red chip" data-cancel="${o.id}">Cancel</button>`;
+    }else if(o.status==='accepted'){
+      action = `<button class="btn chip" data-deliver="${o.id}">Deliver</button>
+                <button class="btn red chip" data-cancel="${o.id}">Cancel</button>`;
+    }else if(o.status==='delivered'){
+      action = `<button class="btn green chip" data-complete="${o.id}">Complete</button>`;
+    }else if(o.status==='pay_request'){
+      action = `<button class="btn green chip" data-payok="${o.id}">Confirm</button>
+                <button class="btn red chip" data-cancel="${o.id}">Reject</button>`;
+    }else{
+      action = `<span class="badge">${o.status}</span>`;
+    }
+    if(o.mode==='upi' && o.shot){
+      action += ` <button class="btn chip" data-shot="${o.id}">View UPI</button>`;
+    }
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML = `<div class="row"><div>${left}</div></div><div class="row">${action}</div>`;
+    list.appendChild(div);
+  });
+}
+$("#adminOrderList").addEventListener('click',e=>{
+  const id = e.target?.dataset?.accept || e.target?.dataset?.deliver || e.target?.dataset?.complete ||
+             e.target?.dataset?.cancel || e.target?.dataset?.shot || e.target?.dataset?.edit || e.target?.dataset?.payok;
+  if(!id) return;
+  const orders=lsGet(S.orders,[]);
+  const o=orders.find(x=>x.id==id);
+  if(!o) return;
+  if(e.target.dataset.accept){ o.status='accepted'; }
+  else if(e.target.dataset.deliver){ o.status='delivered'; }
+  else if(e.target.dataset.complete){
+    o.status='completed';
+    // Deduct/apply money here:
+    const users=lsGet(S.users,[]);
+    const u=users.find(x=>x.phone===o.user);
+    if(u){
+      if(o.mode==='wallet'){
+        u.wallet = Math.max(0,(u.wallet||0) - o.total);
+      }else if(o.mode==='udhari'){
+        u.debt = (u.debt||0) + o.total;
+      }
+      // stock reduce
+      if(o.items?.length){
+        const menu=lsGet(S.menu,[]);
+        o.items.forEach(it=>{
+          const m=menu.find(mm=>mm.id===it.id);
+          if(m && m.stock==='qty' && m.qty>0) m.qty--;
+        }); lsSet(S.menu,menu);
+      }
+      persistUser(u.id,u);
+    }
+  }
+  else if(e.target.dataset.cancel){ o.status='cancelled'; }
+  else if(e.target.dataset.payok){
+    // Confirm udhari clear / wallet add
+    const users=lsGet(S.users,[]);
+    const u=users.find(x=>x.phone===o.user);
+    if(u){
+      if(o.mode==='wallet'){
+        // wallet → reducing debt by wallet transfer
+        const use = Math.min(o.total, u.wallet||0);
+        u.wallet -= use; u.debt = Math.max(0,(u.debt||0)-use);
+      }else if(o.mode==='upi' || o.mode==='cash'){
+        u.debt = Math.max(0,(u.debt||0)-o.total);
+        if(o.total > (u.debt+o.total)){ // extra paid -> treat as wallet top-up
+          const extra = o.total - (u.debt+o.total); // logically 0; keeping placeholder
+        }
+      }
+      persistUser(u.id,u);
+    }
+    o.status='completed';
+  }
+  else if(e.target.dataset.shot){
+    modal(`<h3>UPI Proof</h3>
+      <div class="note">UTR: ${o.utr||'-'}</div>
+      <div style="margin-top:8px">${o.shot?'<img style="max-width:100%;border:1px solid #eee;border-radius:8px" src="'+o.shot+'"/>':'No screenshot'}</div>
+      <div class="row" style="margin-top:10px"><button class="btn" onclick="hide('#modal')">Close</button></div>`);
+    return;
+  }
+  lsSet(S.orders,orders); renderAdminOrders(); computeReports(); renderAdminMenu();
+});
+
+/* Admin Users */
+function renderAdminUsers(){
+  const list=$("#usersList"); list.innerHTML="";
+  const users=lsGet(S.users,[]);
+  users.forEach(u=>{
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML = `<div class="row">
+        <img class="avatar" src="${u.photo||imgPh()}"/>
+        <div>
+          <div style="font-weight:700">${u.name} • ${u.phone}</div>
+          <div class="note">Wallet ₹${u.wallet||0} • Debt +₹${u.debt||0}</div>
+        </div>
+      </div>
+      <div class="row nowrap">
+        <button class="btn chip" data-view="${u.id}">View</button>
+        <button class="btn chip" data-edit="${u.id}">Edit</button>
+        <button class="btn chip" data-allow="${u.id}">${u.allowDebt?'Udhari ON':'Udhari OFF'}</button>
+        <button class="btn red chip" data-block="${u.id}">${u.blocked?'Unblock':'Block'}</button>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+$("#usersList").addEventListener('click',e=>{
+  const vid=e.target?.dataset?.view, eid=e.target?.dataset?.edit, aid=e.target?.dataset?.allow, bid=e.target?.dataset?.block;
+  const users=lsGet(S.users,[]); let u=null;
+  if(vid){ u=users.find(x=>x.id==vid); if(!u) return; modalUserView(u); }
+  if(eid){ u=users.find(x=>x.id==eid); if(!u) return; modalUserEdit(u); }
+  if(aid){ u=users.find(x=>x.id==aid); if(!u) return; u.allowDebt=!u.allowDebt; persistUser(u.id,u); renderAdminUsers(); toast("Updated"); }
+  if(bid){ u=users.find(x=>x.id==bid); if(!u) return; u.blocked=!u.blocked; persistUser(u.id,u); renderAdminUsers(); toast(u.blocked?"Blocked":"Unblocked"); }
+});
+function modalUserView(u){
+  modal(`<h3>User Details</h3>
+    <div class="row" style="margin-bottom:8px">
+      <img class="avatar" src="${u.photo||imgPh()}"/>
+      <div><div style="font-weight:700">${u.name}</div><div class="note">${u.phone}</div></div>
+    </div>
+    <div class="list">
+      <div class="item"><div>Email</div><div>${u.email||'-'}</div></div>
+      <div class="item"><div>Address</div><div>${u.addr||'-'}</div></div>
+      <div class="item"><div>Birthday</div><div>${u.dob||'-'}</div></div>
+      <div class="item"><div>Wallet</div><div class="success">₹${u.wallet||0}</div></div>
+      <div class="item"><div>Debt</div><div class="danger">+₹${u.debt||0}</div></div>
+    </div>
+    <div class="row" style="margin-top:8px"><button class="btn" onclick="hide('#modal')">Close</button></div>`);
+}
+function modalUserEdit(u){
+  const daily=Math.floor((u.monthly||1500)/(u.days||30));
+  modal(`<h3>Edit User</h3>
+    <div class="grid2">
+      <div><label>Name</label><input id="euName" value="${u.name}"/></div>
+      <div><label>Phone</label><input id="euPhone" value="${u.phone}" maxlength="10"/></div>
+      <div><label>PIN</label><input id="euPin" value="${u.pin}" /></div>
+      <div><label>Wallet</label><input id="euWal" type="number" value="${u.wallet||0}"/></div>
+      <div><label>Debt</label><input id="euDebt" type="number" value="${u.debt||0}"/></div>
+      <div><label>Monthly Limit</label><input id="euMon" type="number" value="${u.monthly||1500}"/></div>
+      <div><label>Days</label><input id="euDays" type="number" value="${u.days||30}"/></div>
+      <div><label>Daily (auto)</label><input value="${daily}" disabled/></div>
+      <div><label>Debt Start</label><input id="euStart" type="date" value="${u.debtStart?u.debtStart.slice(0,10):''}"/></div>
+      <div><label>Debt End</label><input id="euEnd" type="date" value="${u.debtEnd?u.debtEnd.slice(0,10):''}"/></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" id="euSave">Save</button>
+      <button class="btn ghost" onclick="hide('#modal')">Close</button>
+    </div>`);
+  $("#euSave").onclick=()=>{
+    u.name=$("#euName").value.trim(); u.phone=$("#euPhone").value.trim(); u.pin=$("#euPin").value.trim();
+    u.wallet=parseInt($("#euWal").value||"0",10); u.debt=parseInt($("#euDebt").value||"0",10);
+    u.monthly=parseInt($("#euMon").value||"1500",10); u.days=parseInt($("#euDays").value||"30",10);
+    const s=$("#euStart").value, e=$("#euEnd").value; u.debtStart= s? new Date(s).toISOString(): null; u.debtEnd = e? new Date(e).toISOString(): null;
+    persistUser(u.id,u); hide("#modal"); renderAdminUsers(); toast("Saved");
+  };
+}
+
+/* Admin Menu */
+$("#mStockMode").addEventListener('change',e=>{
+  const q=$$(".qty-field"); q.forEach(x=> x.classList.toggle('hidden', e.target.value!=='qty'));
+});
+$("#btnResetItem").onclick=()=>{
+  $("#mCat").value=""; $("#mName").value=""; $("#mPrice").value=""; $("#mStockMode").value="auto"; $("#mQty").value=""; $("#mPhoto").value="";
+  $$(".qty-field").forEach(x=>x.classList.add('hidden'));
+};
+$("#btnAddItem").onclick=()=>{
+  const cat=$("#mCat").value.trim(), name=$("#mName").value.trim(), price=parseInt($("#mPrice").value||"0",10);
+  if(!cat||!name||price<=0) return toast("Enter item details");
+  const mode=$("#mStockMode").value; let qty=null;
+  if(mode==='qty'){ qty=parseInt($("#mQty").value||"0",10); if(qty<=0) return toast("Enter quantity"); }
+  let photo=null; const f=$("#mPhoto").files[0];
+  if(f){ const r=new FileReader(); r.onload=()=>{ photo=r.result; pushItem(); }; r.readAsDataURL(f); } else { pushItem(); }
+  function pushItem(){
+    const arr=lsGet(S.menu,[]); arr.push({id:Date.now(),cat,name,price,stock:mode,qty,photo:photo||""}); lsSet(S.menu,arr);
+    renderAdminMenu(); renderMenu(); toast("Item added"); $("#btnResetItem").click();
+  }
+};
+function renderAdminMenu(){
+  const list=$("#menuAdminList"); list.innerHTML="";
+  const menu=lsGet(S.menu,[]);
+  if(!menu.length){ list.innerHTML='<div class="item"><div>No items. Add above.</div></div>'; return;}
+  menu.forEach(m=>{
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML = `<div class="row"><img class="avatar" src="${m.photo||imgPh()}"/><div>
+      <div style="font-weight:700">${m.name} • ₹${m.price}</div><div class="note">${m.cat} • ${m.stock==='qty'?(m.qty+" left"):"auto"}</div></div></div>
+      <div class="row"><button class="btn chip" data-edit="${m.id}">Edit</button>
+      <button class="btn red chip" data-del="${m.id}">Delete</button></div>`;
+    list.appendChild(div);
+  });
+}
+$("#menuAdminList").addEventListener('click',e=>{
+  const did=e.target?.dataset?.del, eid=e.target?.dataset?.edit;
+  const arr=lsGet(S.menu,[]);
+  if(did){
+    const i=arr.findIndex(x=>x.id==did); if(i>-1){ arr.splice(i,1); lsSet(S.menu,arr); renderAdminMenu(); renderMenu(); toast("Deleted"); }
+  }
+  if(eid){
+    const m=arr.find(x=>x.id==eid); if(!m) return;
+    modal(`<h3>Edit Item</h3>
+      <label>Name</label><input id="emName" value="${m.name}"/>
+      <label>Price</label><input id="emPrice" type="number" value="${m.price}"/>
+      <label>Stock</label>
+      <select id="emStock"><option value="auto" ${m.stock==='auto'?'selected':''}>Automatic</option><option value="qty" ${m.stock==='qty'?'selected':''}>Quantity</option></select>
+      <div id="emQtyWrap" class="${m.stock==='qty'?'':'hidden'}"><label>Qty</label><input id="emQty" type="number" value="${m.qty||0}"/></div>
+      <div class="row" style="margin-top:8px"><button class="btn" id="emSave">Save</button><button class="btn ghost" onclick="hide('#modal')">Close</button></div>`);
+    $("#emStock").addEventListener('change', ev=>{ $("#emQtyWrap").classList.toggle('hidden', ev.target.value!=='qty'); });
+    $("#emSave").onclick=()=>{
+      m.name=$("#emName").value.trim(); m.price=parseInt($("#emPrice").value||"0",10);
+      m.stock=$("#emStock").value; m.qty= m.stock==='qty'? parseInt($("#emQty").value||"0",10): null;
+      lsSet(S.menu,arr); hide("#modal"); renderAdminMenu(); renderMenu(); toast("Saved");
+    };
+  }
+});
+
+/* Reports */
+function computeReports(){
+  const t0 = new Date(); const key = d=>d.toISOString().slice(0,10);
+  const ord=lsGet(S.orders,[]).filter(o=>o.status==='completed');
+  const todayKey = key(new Date());
+  const today = ord.filter(o=>key(new Date(o.created))===todayKey);
+  const sum = (arr,mode)=>arr.filter(o=>o.mode===mode).reduce((a,b)=>a+b.total,0);
+  $("#rWal").textContent = "₹"+sum(today,"wallet");
+  $("#rUpi").textContent = "₹"+sum(today,"upi");
+  $("#rCash").textContent = "₹"+sum(today,"cash");
+  const debtGiven = ord.filter(o=>o.mode==='udhari').reduce((a,b)=>a+b.total,0);
+  $("#rDebt").textContent = "-₹"+debtGiven;
+}
+$("#btnRunReport").onclick=()=>{
+  const f=$("#repFrom").value, t=$("#repTo").value; const out=$("#repOut"); out.innerHTML="";
+  if(!f||!t) return toast("Pick from/to");
+  const F=new Date(f), T=new Date(t); const ord=lsGet(S.orders,[]).filter(o=>o.status==='completed');
+  const within = ord.filter(o=>{ const d=new Date(o.created); return d>=F && d<=T; });
+  const modes=["wallet","upi","cash","udhari"]; let html="";
+  modes.forEach(m=>{
+    const sum=within.filter(x=>x.mode===m).reduce((a,b)=>a+b.total,0);
+    html+=`<div class="item"><div>${m.toUpperCase()}</div><div>₹${sum}</div></div>`;
+  });
+  out.innerHTML = html || '<div class="item"><div>No data</div></div>';
+};
+
+/* Settings Save */
+$("#btnSaveBrand").onclick=()=>{
+  const h=lsGet(S.hotel,{});
+  h.name=$("#setHotelName").value||"Patidar Hotel";
+  h.titleSize=parseInt($("#setTitleSize").value||"36",10);
+  h.titleColor=$("#setTitleColor").value||"#111827";
+  h.titleAlign=$("#setTitleAlign").value||"center";
+  lsSet(S.hotel,h); applyHotelBrand(); toast("Brand saved");
+};
+$("#udhariMonthly,#udhariDays").addEventListener('input',()=>{
+  const mon=parseInt($("#udhariMonthly").value||"1500",10);
+  const days=parseInt($("#udhariDays").value||"30",10);
+  $("#calcDaily").textContent = "Daily limit: ₹"+Math.floor(mon/Math.max(1,days));
+});
+$("#udhariMode,#udhariMonthly,#udhariDays,#tgWallet,#tgUpi,#tgCash,#tgDebt,#tgOffers,#tgAI,#tgLang,#tgStaff").forEach?.(()=>{}) // noop for old browsers
+;["change","input"].forEach(evt=>{
+  ["udhariMode","udhariMonthly","udhariDays","tgWallet","tgUpi","tgCash","tgDebt","tgOffers","tgAI","tgLang","tgStaff"]
+  .forEach(id=>{
+    const el=$("#"+id); if(!el) return;
+    el.addEventListener(evt, saveSettings);
+  });
+});
+function saveSettings(){
+  const st=lsGet(S.settings,{});
+  st.udhari={ mode:$("#udhariMode").value, monthly:parseInt($("#udhariMonthly").value||"1500",10), days:parseInt($("#udhariDays").value||"30",10) };
+  st.modules={
+    wallet:$("#tgWallet").checked, upi:$("#tgUpi").checked, cash:$("#tgCash").checked, debt:$("#tgDebt").checked,
+    offers:$("#tgOffers").checked, ai:$("#tgAI").checked, lang:$("#tgLang").checked, staff:$("#tgStaff").checked
+  };
+  lsSet(S.settings,st); toast("Settings updated");
+}
+
+/* ============== SUPER ADMIN PANEL ============== */
+function openSuper(){
+  hide("#view-super-auth"); show("#view-super"); saSwitch('admins'); renderSAAdmins(); renderSpecials();
+}
+$("#btnSuperLogout").onclick=()=>{ CURRENT_SUPER=null; hide("#view-super"); show("#view-landing"); };
+function saSwitch(tab){
+  const map={admins:"#sa-admins", global:"#sa-global", special:"#sa-special"};
+  for(const k in map){ hide(map[k]); $("#sa-tab-"+k)?.classList?.add?.('ghost'); }
+  show(map[tab]); $("#sa-tab-"+tab)?.classList?.remove?.('ghost');
+}
+$("#sa-tab-admins").onclick=()=>{ renderSAAdmins(); saSwitch('admins'); };
+$("#sa-tab-global").onclick=()=>{ saSwitch('global'); };
+$("#sa-tab-special").onclick=()=>{ renderSpecials(); saSwitch('special'); };
+
+function renderSAAdmins(){
+  const list=$("#saAdminList"); list.innerHTML="";
+  const arr=lsGet(S.admins,[]);
+  arr.forEach(a=>{
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML=`<div>${a.name} • ${a.phone}</div>
+    <div class="row"><button class="btn chip" data-edit="${a.phone}">Edit</button>
+    <button class="btn red chip" data-del="${a.phone}">Delete</button></div>`;
+    list.appendChild(div);
+  });
+}
+$("#saAdminList").addEventListener('click',e=>{
+  const dp=e.target?.dataset?.del, ep=e.target?.dataset?.edit;
+  const arr=lsGet(S.admins,[]);
+  if(dp){ const i=arr.findIndex(x=>x.phone===dp); if(i>-1){ arr.splice(i,1); lsSet(S.admins,arr); renderSAAdmins(); toast("Removed"); } }
+  if(ep){
+    const a=arr.find(x=>x.phone===ep);
+    modal(`<h3>Edit Admin</h3>
+      <label>Name</label><input id="eaName" value="${a.name}"/>
+      <label>Phone</label><input id="eaPhone" value="${a.phone}"/>
+      <label>PIN</label><input id="eaPin" value="${a.pin}"/>
+      <div class="row" style="margin-top:8px"><button class="btn" id="eaSave">Save</button><button class="btn ghost" onclick="hide('#modal')">Close</button></div>`);
+    $("#eaSave").onclick=()=>{
+      a.name=$("#eaName").value.trim(); a.phone=$("#eaPhone").value.trim(); a.pin=$("#eaPin").value.trim();
+      lsSet(S.admins,arr); hide("#modal"); renderSAAdmins(); toast("Saved");
+    };
+  }
+});
+$("#saCreateAdmin").onclick=()=>{
+  const n=$("#saAName").value.trim(), p=$("#saAPhone").value.trim(), pin=$("#saAPin").value.trim();
+  if(!n||!/^\d{10}$/.test(p)||pin.length<4) return toast("Enter valid details");
+  const arr=lsGet(S.admins,[]); if(arr.find(x=>x.phone===p)) return toast("Phone exists");
+  arr.push({name:n, phone:p, pin}); lsSet(S.admins,arr); renderSAAdmins(); toast("Admin created");
+};
+
+/* Specials */
+$("#spAdd").onclick=()=>{
+  const t=$("#spTitle").value.trim(), d=$("#spDate").value, m=$("#spMsg").value.trim();
+  if(!t||!d) return toast("Enter title/date");
+  const arr=lsGet(S.specials,[]); arr.push({id:Date.now(), title:t, date:d, msg:m}); lsSet(S.specials,arr); renderSpecials(); toast("Added");
+};
+function renderSpecials(){
+  const list=$("#spList"); list.innerHTML="";
+  const arr=lsGet(S.specials,[]).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!arr.length){ list.innerHTML='<div class="item"><div>None</div></div>'; return; }
+  arr.forEach(s=>{
+    const div=document.createElement('div'); div.className='item';
+    div.innerHTML=`<div>${s.title} • ${s.date}</div><div class="row"><button class="btn red chip" data-del="${s.id}">Delete</button></div>`;
+    list.appendChild(div);
+  });
+}
+$("#spList").addEventListener('click',e=>{
+  const id=e.target?.dataset?.del; if(!id) return;
+  const arr=lsGet(S.specials,[]); const i=arr.findIndex(x=>x.id==id); if(i>-1){ arr.splice(i,1); lsSet(S.specials,arr); renderSpecials(); }
+});
+
+/* ============== APPLY GLOBAL MODULE SWITCH (Super Admin) ============== */
+["sgWallet","sgUpi","sgCash","sgDebt","sgStaff","sgAI","sgOffers","sgLang"].forEach(id=>{
+  const el=$("#"+id); if(!el) return;
+  el.addEventListener('change',()=>{
+    const st=lsGet(S.settings,{});
+    const map={sgWallet:'wallet',sgUpi:'upi',sgCash:'cash',sgDebt:'debt',sgStaff:'staff',sgAI:'ai',sgOffers:'offers',sgLang:'lang'};
+    const key=map[id]; st.modules = st.modules||{}; st.modules[key]=el.checked; lsSet(S.settings,st); toast("Global setting saved");
+  });
+});
+
+/* ============== Birthday Gift Auto Credit (on app open) ============== */
+(function birthdayAutoCredit(){
+  const st=lsGet(S.settings,{}); if(st.modules?.ai!==false){
+    const users=lsGet(S.users,[]);
+    const today=new Date(); users.forEach(u=>{
+      if(u.dob){ const d=new Date(u.dob); if(d.getDate()===today.getDate() && d.getMonth()===today.getMonth()){
+        // simple gift ₹100 once/day per open (idempotent marker could be added)
+        u.wallet = (u.wallet||0) + 100;
+      }}
+    }); lsSet(S.users,users);
+  }
+})();
+
+/* ============== Admin Settings Save Hook to Landing Title ============== */
+applyHotelBrand();
+
+/* ====== LANDING BACK BUTTONS ====== */
+$("#backFromUser").onclick=$("#backFromCreate").onclick=()=>{ hide("#view-user-auth"); show("#view-landing"); };
+
+/* ====== ADMIN SETTINGS SAVE ====== */
+$("#udhariMode,#udhariMonthly,#udhariDays").addEventListener('change',()=>{
+  const st=lsGet(S.settings,{});
+  st.udhari={ mode:$("#udhariMode").value, monthly:parseInt($("#udhariMonthly").value||"1500",10), days:parseInt($("#udhariDays").value||"30",10) };
+  lsSet(S.settings,st);
+  $("#calcDaily").textContent = "Daily limit: ₹"+Math.floor((st.udhari.monthly)/(st.udhari.days||30));
+  toast("Udhari settings saved");
+});
+
+/* ====== SIMPLE AI HINTS ====== */
+const AI_MSGS=[
+  "Tip: Wallet low? Try UPI or Cash.",
+  "Note: Credit purchases count to your daily limit.",
+  "Heads-up: Admin completes order then only amount applies."
+];
+setInterval(()=>{
+  if($("#aiHint") && !$("#user-shop").classList.contains('hidden') && CURRENT_USER?.ai){
+    $("#aiHint").textContent = "AI: "+AI_MSGS[Math.floor(Math.random()*AI_MSGS.length)];
+  }
+}, 4000);
+
+</script>
+</body>
+</html>
+<!-- PHASE4 RESPONSIVE + FEATURES - START -->
+<style>
+/* PHASE4 RESPONSIVE */
+@media (max-width: 900px){
+  .container{padding:10px;}
+  .card{border-radius:12px;padding:14px}
+  .avatar{width:40px;height:40px}
+  .bigavatar{width:72px;height:72px}
+  .kpi{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+  .row{flex-wrap:wrap}
+  .stack{flex-direction:column}
+  .btn{padding:10px 12px}
+  #menuList .item{flex-direction:column;align-items:flex-start}
+  #menuList .item img{margin-bottom:8px}
+}
+/* larger screens */
+@media (min-width: 1200px){
+  .container{width:1100px}
+}
+/* ensure lists scroll inside cards */
+.list{max-height:42vh; overflow:auto}
+#adminOrderList, #usersList, #menuAdminList, #myOrders, #menuList { max-height:48vh; overflow:auto }
+.cart-summary{position:sticky; bottom:0; background:transparent; padding-top:8px}
+/* status badges */
+.badge.wallet{background:#16a34a;color:#fff} .badge.upi{background:#0ea5a4;color:#fff} .badge.cash{background:#f59e0b;color:#111} .badge.udhari{background:#dc2626;color:#fff}
+/* invoice print styles */
+@media print{
+  body *{visibility:hidden}
+  #printArea, #printArea *{visibility:visible}
+  #printArea{position:fixed;left:0;top:0;width:100%}
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  /* Utility: status badge text */
+  function statusBadge(mode){
+    if(!mode) return '<span class="badge">—</span>';
+    const m = mode.toLowerCase();
+    if(m==='wallet') return '<span class="badge wallet">Wallet</span>';
+    if(m==='upi') return '<span class="badge upi">UPI</span>';
+    if(m==='cash') return '<span class="badge cash">Cash</span>';
+    if(m==='udhari') return '<span class="badge udhari">Udhari</span>';
+    return '<span class="badge">'+mode+'</span>';
+  }
+  window.statusBadge = statusBadge;
+
+  /* 1) Show Status column / badges in My Orders (override renderMyOrders) */
+  window.renderMyOrders = function(){
+    const list=$("#myOrders"); list.innerHTML="";
+    if(!CURRENT_USER){ list.innerHTML='<div class="item"><div>Login to see orders</div></div>'; return;}
+    const orders=lsGet(S.orders,[]).filter(o=>o.user===CURRENT_USER.phone).sort((a,b)=>b.id-a.id);
+    if(!orders.length){ list.innerHTML='<div class="item"><div>No orders yet</div></div>'; return;}
+    orders.forEach(o=>{
+      const st = statusBadge(o.mode);
+      const left = `<div><div style="font-weight:700">Bill ${o.bill}</div>
+        <div class="note">${new Date(o.created).toLocaleString()}</div>
+        <div class="note">${o.items.length? o.items.map(i=>i.name+' x'+(i.qty||1)).join(", ") : ''}</div></div>`;
+      let actions = `<button class="btn chip" data-cancel="${o.id}" ${o.status!=='pending'?'disabled':''}>Cancel</button>`;
+      if(o.mode==='upi' && o.shot){ actions += ` <button class="btn chip" data-shot="${o.id}">View UPI</button>`; }
+      actions += ` <button class="btn chip" data-inv="${o.id}">Invoice</button>`;
+      const div=document.createElement('div'); div.className='item';
+      div.innerHTML = `<div class="row">${left}</div><div class="row"><div class="badge mono">₹${o.total}</div> ${st} ${actions}</div>`;
+      list.appendChild(div);
+    });
+  };
+
+  // Invoice view for users
+  $("#myOrders").addEventListener('click', e=>{
+    const id = e.target?.dataset?.inv;
+    if(!id) return;
+    const o = lsGet(S.orders,[]).find(x=>x.id==id); if(!o) return;
+    const itemsHtml = (o.items||[]).map(it=>`<tr><td>${it.name}</td><td class="mono">${it.qty||1}</td><td class="mono">₹${it.price}</td><td class="mono">₹${(it.price||0)*(it.qty||1)}</td></tr>`).join('');
+    modal(`<div id="printArea"><h3>Invoice ${o.bill}</h3><div class="note">${lsGet(S.hotel,{}).name} • ${new Date(o.created).toLocaleString()}</div>
+      <table style="width:100%;margin-top:8px"><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>${itemsHtml}</table>
+      <div style="margin-top:8px"><b>Total: ₹${o.total}</b></div>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="window.print()">Print</button><button class="btn" onclick="downloadInvoicePDF(${o.id})">Download PDF</button><button class="btn ghost" onclick="hide(\\'#modal\\')">Close</button></div></div>`);
+  });
+
+  // Download invoice as simple printable popup (PDF requires library; we'll open print dialog)
+  window.downloadInvoicePDF = function(orderId){
+    const o = lsGet(S.orders,[]).find(x=>x.id==orderId); if(!o) return toast('Not found');
+    // open new window and print (user can save as PDF)
+    const w = window.open('','_blank','width=800,height=800');
+    const itemsHtml = (o.items||[]).map(it=>`<tr><td>${it.name}</td><td class="mono">${it.qty||1}</td><td class="mono">₹${it.price}</td><td class="mono">₹${(it.price||0)*(it.qty||1)}</td></tr>`).join('');
+    w.document.write(`<html><head><title>Invoice ${o.bill}</title><style>body{font-family:Arial;padding:18px}table{width:100%;border-collapse:collapse}td,th{border:1px solid #ddd;padding:6px}</style></head><body><h2>Invoice ${o.bill}</h2><div>${lsGet(S.hotel,{}).name}</div><div>${new Date(o.created).toLocaleString()}</div><table><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>${itemsHtml}</table><h3>Total: ₹${o.total}</h3></body></html>`);
+    w.document.close(); w.print();
+  };
+
+  /* 2) Admin: Close Order feature + view items (override renderAdminOrders) */
+  if(window.renderAdminOrders){
+    const old = window.renderAdminOrders;
+    window.renderAdminOrders = function(){
+      const list = $("#adminOrderList"); list.innerHTML='';
+      const orders=lsGet(S.orders,[]).sort((a,b)=>b.id-a.id);
+      if(!orders.length){ list.innerHTML='<div class="item"><div>No orders</div></div>'; return;}
+      orders.forEach(o=>{
+        const left = `<div><div style="font-weight:700">Bill ${o.bill} • ${o.name} (${o.user})</div>
+          <div class="note">${new Date(o.created).toLocaleString()}</div>
+          <div class="note">${o.items.length?o.items.map(i=>i.name+' x'+(i.qty||1)).join(", "): (o.status==='pay_request'?'Payment Request':'')}</div></div>`;
+        let action='';
+        if(o.status==='pending'){
+          action = `<button class="btn chip" data-accept="${o.id}">Accept</button>
+                    <button class="btn chip" data-editorder="${o.id}">Edit</button>
+                    <button class="btn red chip" data-cancel="${o.id}">Cancel</button>`;
+        }else if(o.status==='accepted'){
+          action = `<button class="btn chip" data-deliver="${o.id}">Deliver</button>
+                    <button class="btn red chip" data-cancel="${o.id}">Cancel</button>`;
+        }else if(o.status==='delivered'){
+          action = `<button class="btn green chip" data-complete="${o.id}">Complete</button>`;
+        }else if(o.status==='pay_request'){
+          action = `<button class="btn green chip" data-payok="${o.id}">Confirm</button>
+                    <button class="btn red chip" data-cancel="${o.id}">Reject</button>`;
+        }else{
+          action = `<span class="badge">${o.status}</span>`;
+        }
+        action += ` <button class="btn chip" data-viewitems="${o.id}">View Items</button>`;
+        if(!o.locked) action += ` <button class="btn ghost" data-close="${o.id}">Close Order</button>`;
+        else action += ` <span class="note">Closed</span>`;
+        const div=document.createElement('div'); div.className='item';
+        div.innerHTML = `<div class="row"><div>${left}</div></div><div class="row">${action}</div>`;
+        list.appendChild(div);
+      });
+    };
+  }
+
+  // adminOrderList click handler for view/edit/close
+  $("#adminOrderList").addEventListener('click', function(e){
+    const vid = e.target?.dataset?.viewitems, eid = e.target?.dataset?.editorder, cid = e.target?.dataset?.close;
+    if(vid){ const o=lsGet(S.orders,[]).find(x=>x.id==vid); if(!o) return; modal(`<h3>Items: ${o.bill}</h3><div class="note">${o.items.map(i=>i.name+' x'+(i.qty||1)).join(', ')}</div><div class="row" style="margin-top:8px"><button class="btn" onclick="hide(\\'#modal\\')">Close</button></div>`); return; }
+    if(eid){
+      const orders=lsGet(S.orders,[]); const o=orders.find(x=>x.id==eid); if(!o) return;
+      modal(`<h3>Edit Order ${o.bill}</h3><div id="editOrderList">${o.items.map((it,idx)=>'<div class="item"><div style="font-weight:700">'+it.name+'</div><div class="row"><label>Qty</label><input type="number" min="1" value="'+(it.qty||1)+'" data-idx="'+idx+'" style="width:80px"/><label>Price</label><input type="number" min="0" value="'+it.price+'" data-price="'+idx+'" style="width:100px"/></div></div>').join('')}</div><div class="row" style="margin-top:8px"><button class="btn" id="saveOrderEdits">Save</button><button class="btn ghost" onclick="hide(\\'#modal\\')">Close</button></div>`);
+      document.getElementById('saveOrderEdits').onclick = ()=>{
+        const inputs = document.querySelectorAll('#editOrderList input[data-idx]');
+        inputs.forEach(inp=>{ const idx = parseInt(inp.dataset.idx,10); o.items[idx].qty = Math.max(1, parseInt(inp.value||"1",10)); });
+        const prices = document.querySelectorAll('#editOrderList input[data-price]');
+        prices.forEach(inp=>{ const idx = parseInt(inp.dataset.price,10); o.items[idx].price = Math.max(0, parseInt(inp.value||"0",10)); });
+        o.total = o.items.reduce((a,b)=>a + (b.price||0)*(b.qty||1),0);
+        lsSet(S.orders, orders); toast('Order updated'); hide('#modal'); renderAdminOrders();
+      };
+      return;
+    }
+    if(cid){
+      const orders=lsGet(S.orders,[]); const o=orders.find(x=>x.id==cid); if(!o) return;
+      o.locked = true; lsSet(S.orders, orders); toast('Order closed'); renderAdminOrders();
+      return;
+    }
+  });
+
+  /* 3) Reports: Udhari Given / Received / Pending */
+  window.computeReports = function(){
+    const ord=lsGet(S.orders,[]).filter(o=>o.status==='completed');
+    const todayKey = new Date().toISOString().slice(0,10);
+    const today = ord.filter(o=>o.created && o.created.slice(0,10)===todayKey);
+    const sum = (arr,mode)=>arr.filter(o=>o.mode===mode).reduce((a,b)=>a+b.total,0);
+    $("#rWal").textContent = "₹"+sum(today,"wallet");
+    $("#rUpi").textContent = "₹"+sum(today,"upi");
+    $("#rCash").textContent = "₹"+sum(today,"cash");
+    // Udhari given = sum of users current debt
+    const users = lsGet(S.users,[]);
+    const debtGiven = users.reduce((a,u)=>a + (u.debt||0), 0);
+    // Udhari received = sum of udhari_history 'paid' amounts
+    const received = users.reduce((a,u)=> a + ((u.udhari_history||[]).filter(x=>x.type==='paid').reduce((s,t)=>s+(t.amount||0),0)), 0);
+    $("#rDebt").textContent = "-₹"+debtGiven;
+    // show extra lines in repOut if present
+    const repOut = $("#repOut");
+    if(repOut){
+      const extra = `<div class="item"><div>UDHARI RECEIVED</div><div>₹${received}</div></div><div class="item"><div>UDHARI PENDING</div><div>₹${debtGiven}</div></div>`;
+      repOut.innerHTML = (repOut.innerHTML || '') + extra;
+    }
+  };
+
+  /* 4) Add Item: Photo upload Base64 fix (override btnAddItem) */
+  const addBtn = document.getElementById('btnAddItem');
+  if(addBtn){
+    addBtn.onclick = ()=>{
+      const cat=$("#mCat").value.trim(), name=$("#mName").value.trim(), price=parseInt($("#mPrice").value||"0",10);
+      if(!cat||!name||price<=0) return toast("Enter item details");
+      const mode=$("#mStockMode").value; let qty=null;
+      if(mode==='qty'){ qty=parseInt($("#mQty").value||"0",10); if(qty<=0) return toast("Enter quantity"); }
+      const f = document.getElementById('mPhoto').files[0];
+      if(f){
+        const reader = new FileReader();
+        reader.onload = ()=>{
+          const photo = reader.result;
+          const arr = lsGet(S.menu,[]); arr.push({id:Date.now(),cat,name,price,stock:mode,qty,photo:photo}); lsSet(S.menu,arr);
+          renderAdminMenu(); renderMenu(); toast("Item added"); document.getElementById('btnResetItem').click();
+        };
+        reader.readAsDataURL(f);
+      } else {
+        const arr = lsGet(S.menu,[]); arr.push({id:Date.now(),cat,name,price,stock:mode,qty,photo:""}); lsSet(S.menu,arr);
+        renderAdminMenu(); renderMenu(); toast("Item added"); document.getElementById('btnResetItem').click();
+      }
+    };
+  }
+
+  /* 5) Udhari History view in modalUserView */
+  const oldModalUserView = window.modalUserView;
+  window.modalUserView = function(u){
+    const history = (u.udhari_history||[]).map(h=>`<div class="item"><div>${h.type.toUpperCase()} • ₹${h.amount} • ${new Date(h.date).toLocaleString()}</div><div class="note">${h.note||''}</div></div>`).join('') || '<div class="item"><div>No history</div></div>';
+    modal(`<h3>User Details</h3>
+      <div class="row" style="margin-bottom:8px">
+        <img class="avatar" src="${u.photo||imgPh()}"/>
+        <div><div style="font-weight:700">${u.name}</div><div class="note">${u.phone}</div></div>
+      </div>
+      <div class="list">
+        <div class="item"><div>Email</div><div>${u.email||'-'}</div></div>
+        <div class="item"><div>Address</div><div>${u.addr||'-'}</div></div>
+        <div class="item"><div>Birthday</div><div>${u.dob||'-'}</div></div>
+        <div class="item"><div>Wallet</div><div class="success">₹${u.wallet||0}</div></div>
+        <div class="item"><div>Debt</div><div class="danger">+₹${u.debt||0}</div></div>
+      </div>
+      <div class="divider"></div>
+      <h3>Udhari History</h3>
+      <div class="list">${history}</div>
+      <div class="row" style="margin-top:8px"><button class="btn" onclick="hide('#modal')">Close</button></div>`);
+  };
+
+  // initial calls
+  renderAdminMenu && renderAdminMenu();
+  renderMenu && renderMenu();
+  renderMyOrders && renderMyOrders();
+  renderAdminUsers && renderAdminUsers();
+  computeReports && computeReports();
+}); // DOMContentLoaded end
+</script>
+<!-- PHASE4 RESPONSIVE + FEATURES - END -->
